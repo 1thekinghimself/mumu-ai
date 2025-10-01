@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MUMU AI</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; }
+    #chat { height: 60vh; overflow-y: auto; border: 1px solid #ddd; padding: 10px; }
+    .me { color: #111; margin: 5px 0; }
+    .mumu { color: #0070f3; margin: 5px 0; }
+    textarea { width: 100%; margin-top: 10px; }
+    button { margin-top: 5px; padding: 8px 16px; border: none; border-radius: 6px; background:#0070f3; color:white; cursor:pointer; }
+    button:hover { background:#005bb5; }
+  </style>
+</head>
+<body>
+  <h2>MUMU AI (Vercel edition)</h2>
+  <div id="chat"></div>
+  <textarea id="msg" rows="3"></textarea>
+  <button id="send">Send</button>
+
+  <script>
+    document.getElementById("send").onclick = async () => {
+      const msg = document.getElementById("msg").value.trim();
+      if (!msg) return;
+      addLine("You", msg, "me");
+      document.getElementById("msg").value = "";
+
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ message: msg })
+      });
+      const j = await res.json();
+      addLine("MUMU", j.reply || j.error || "Error", "mumu");
+    };
+
+    function addLine(who, text, cls) {
+      const el = document.getElementById("chat");
+      const p = document.createElement("div");
+      p.className = cls;
+      p.innerHTML = `<b>${who}:</b> ${text}`;
+      el.appendChild(p);
+      el.scrollTop = el.scrollHeight;
+    }
+  </script>
+</body>
+</html>
