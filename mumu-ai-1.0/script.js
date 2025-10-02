@@ -1,5 +1,4 @@
-const API_URL = "https://api.deepseek.com/v1/chat/completions";
-const API_KEY = "YOUR_DEEPSEEK_KEY"; // put in Netlify env vars
+const API_URL = "/.netlify/functions/mumu";
 
 async function sendMessage() {
   const input = document.getElementById("user-input");
@@ -11,12 +10,9 @@ async function sendMessage() {
 
   const response = await fetch(API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${API_KEY}`
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "deepseek-chat-671b", 
+      model: "deepseek-chat-671b",
       messages: [
         { role: "system", content: "You are MUMU AI (Modular Unified Machine for Understanding). MUMU is witty, fun, and natural in conversation. Respond like a smart friend, not a stiff bot." },
         { role: "user", content: message }
@@ -27,12 +23,4 @@ async function sendMessage() {
   const data = await response.json();
   const reply = data.choices[0].message.content;
   addMessage("MUMU", reply);
-}
-
-function addMessage(sender, text) {
-  const chatBox = document.getElementById("chat-box");
-  const msg = document.createElement("p");
-  msg.innerHTML = `<b>${sender}:</b> ${text}`;
-  chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
 }
